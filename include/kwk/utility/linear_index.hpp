@@ -24,7 +24,7 @@ namespace kwk
   //! @return The linear index equivalent to (idx...) for the current shape
   //================================================================================================
   template<auto Shaper, std::integral... Index>
-  constexpr auto linear_index( shape<Shaper> const& sh, Index... idx ) noexcept
+  KWK_CONST constexpr auto linear_index( shape<Shaper> const sh, Index... idx ) noexcept
   {
     KIWAKU_ASSERT ( sh.contains(idx...)
                   , "Linearizing out of bounds indexes "

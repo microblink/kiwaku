@@ -22,7 +22,7 @@ namespace kwk::__
   // Converts a sequence of value/joker/axis into a shape/stride descriptor type
   //================================================================================================
   template<typename SizeType, typename... Args>
-  KWK_FORCEINLINE constexpr auto as_descriptor(Args... args)
+  KWK_CONST KWK_TRIVIAL constexpr auto as_descriptor(Args... args)
   {
     if constexpr(sizeof...(Args) == 0) return combo<SizeType>{};
     else
@@ -48,7 +48,7 @@ namespace kwk::__
         }
       };
 
-      return [&]<std::size_t... N>(std::index_sequence<N...>)
+      return [=]<std::size_t... N>(std::index_sequence<N...>)
       {
         return make_combo<SizeType>((convert(args, kumi::index<N>) * ...));
       }(std::index_sequence_for<Args...>{});
@@ -56,7 +56,7 @@ namespace kwk::__
   }
 
   template<typename SizeType, typename A>
-  KWK_FORCEINLINE constexpr auto as_descriptor(A const&)
+  KWK_CONST KWK_FORCEINLINE constexpr auto as_descriptor( A const & )
   requires requires(A) { A::descriptor; }
   {
     return A::descriptor;
@@ -125,12 +125,13 @@ namespace kwk::__
           , typename SizeType
           , typename... Args
           >
+  KWK_CONST KWK_FORCEINLINE
   constexpr auto make_extent(Args... args)
   requires( !duplicate_axis<decltype(as_descriptor<SizeType>(args...))>
           && (has_valid_index<decltype(as_descriptor<SizeType>(args...)),sizeof...(Args)>)
           )
   {
-    return [&]<std::size_t... N>(std::index_sequence<N...>)
+    return [=]<std::size_t... N>(std::index_sequence<N...>) KWK_LAMBDA_FORCEINLINE
     {
       constexpr std::int32_t sz = sizeof...(Args) - 1;
       return  Wrapper<as_descriptor<SizeType>(Args{}...)>

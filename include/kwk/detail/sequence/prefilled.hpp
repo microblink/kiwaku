@@ -232,21 +232,24 @@ namespace kwk::__
     constexpr auto operator[](A) const noexcept = delete;
 
     // Internal storage access for algorithms
-    constexpr storage_t      & storage()       noexcept { return static_cast<storage_t      &>(*this); }
-    constexpr storage_t const& storage() const noexcept { return static_cast<storage_t const&>(*this); }
+    KWK_PURE KWK_TRIVIAL constexpr storage_t      & storage()       noexcept { return static_cast<storage_t      &>(*this); }
+    KWK_PURE KWK_TRIVIAL constexpr storage_t const& storage() const noexcept { return static_cast<storage_t const&>(*this); }
 
     // Total size of the array
     static constexpr std::int32_t size() noexcept { return static_size; }
 
     // Conversion to std::array
-    constexpr decltype(auto) as_array() const noexcept
+    KWK_PURE KWK_FORCEINLINE constexpr decltype(auto) as_array() const noexcept
     {
-      return kumi::apply( [](auto... m)
-                          {
-                            return std::array<value_type,static_size>{static_cast<value_type>(m)...};
-                          }
-                        , *this
-                        );
+      if constexpr (dynamic_size == static_size)
+          return storage();
+      else
+          return kumi::apply( [](auto... m)
+                              {
+                                return std::array<value_type,static_size>{static_cast<value_type>(m)...};
+                              }
+                            , *this
+                            );
     }
 
     // Set a particular value

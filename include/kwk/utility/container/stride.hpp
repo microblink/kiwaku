@@ -174,52 +174,91 @@ namespace kwk
 
     /// Indexing interface
     template<std::convertible_to<size_type>... Is>
-    KWK_PURE KWK_FORCEINLINE constexpr
+    KWK_PURE constexpr
     size_type linearize(Is... is) const noexcept
     requires( sizeof...(Is) <= static_order )
     {
-      return [=, *this]<int...i>(std::integer_sequence<int, i...>)
+      return [=, *this]<int...i>(std::integer_sequence<int, i...>) KWK_LAMBDA_FORCEINLINE
       {
           return (0 + ... + (get<i>(*this) * is));
       }(std::make_integer_sequence<int, static_order>{});
     }
   };
 
-  /// Converts a @ref kwk::shape into its corresponding @ref kwk::stride, conserving as much static
-  /// informations as possible.
-  template<auto Shape>
-  KWK_CONST constexpr
-  auto as_stride(shape<Shape> const s) noexcept
-  {
-    if constexpr(Shape.size() == 1) return stride<kumi::back(Shape)[1]>{};
-    else
-    {
-      auto const d = kumi::fold_left( [](auto a, auto m){ return push_front(a, m * front(a)); }
-                                    , s
-                                    , kumi::tuple{fixed<1>}
-                                    );
-
-      return [&]<std::size_t... I>(std::index_sequence<I...>, auto t)
-      {
-        return with_strides( (get<I>(Shape).base() = get<I>(t))...);
-      }(std::make_index_sequence<Shape.size()>{}, pop_front(d));
-    }
-  }
-
   //================================================================================================
   //! @brief Generates a kwk::stride from a list of stride value or joker
   //! @param  ds        Variadic pack of sizes
   //================================================================================================
   template<typename... Ds>
+  KWK_CONST KWK_FORCEINLINE
   constexpr auto with_strides(Ds... ds) noexcept
   {
     return __::make_extent<kwk::stride,std::int32_t>(ds...);
   }
 
   template<kumi::product_type Ds>
+  KWK_CONST KWK_FORCEINLINE 
   constexpr auto with_strides(Ds ds) noexcept
   {
-    return kumi::apply([](auto... s) { return with_strides(s...); }, ds);
+    return kumi::apply([](auto... s) KWK_LAMBDA_FORCEINLINE { return with_strides(s...); }, ds);
+  }
+
+  namespace __ // helpers for as_stride
+  {
+    KWK_CONST KWK_TRIVIAL constexpr auto make_stride(kumi::tuple<>, auto const... all_strides) noexcept { return with_strides(all_strides..., fixed<1>); }
+
+    template<typename AtleastOne, typename... Remaining>
+    KWK_CONST KWK_TRIVIAL constexpr auto make_stride(kumi::tuple<AtleastOne, Remaining...> const axis_tuple, auto const last_value, auto const... rightmost_values) noexcept
+    {
+        return make_stride
+        (
+            pop_back(axis_tuple),
+            back(axis_tuple) * last_value,
+            last_value, rightmost_values...
+        );
+    }
+
+    template<typename T, std::size_t size>
+    KWK_CONST constexpr auto make_fully_dynamic_stride(std::array<T, size> const axes) noexcept
+    {
+      return [&]<int... i>(std::integer_sequence<int, i...>) KWK_LAMBDA_FORCEINLINE
+      {
+        unsigned strides[size-1];
+        strides[0] = axes.back();
+        (
+          ...,
+          (strides[i+1] = strides[i] * axes[size-2-i])
+        );
+        return with_strides(strides[size-2-i]..., axes.back(), fixed<1>);
+      }(std::make_integer_sequence<int, size-2>{});
+    }
+  } // namespace __
+
+  /// Converts a @ref kwk::shape into its corresponding @ref kwk::stride, conserving as much static
+  /// information as possible.
+  template<auto Shape>
+  KWK_CONST constexpr
+  auto as_stride(shape<Shape> const s) noexcept
+  {
+         if constexpr(Shape.static_size == 1             ) return with_strides(               fixed<1>);
+    else if constexpr(Shape.static_size == 2             ) return with_strides(kumi::back(s), fixed<1>);
+    else if constexpr(Shape.static_size == s.dynamic_size) return __::make_fully_dynamic_stride(s.storage()); // avoid kumi compile-time hoops for purely dynamic shapes
+    else
+    {
+#   if 0 // FIXME: attempt to avoid the kumi foldable overhead - failed as it always produces fully dynamic strides (loses compile time information)?
+      return __::make_stride(kumi::extract(s,kumi::index<1>, kumi::index<Shape.size()-1>), kumi::back(s)); // major axis is irrelevant
+#   else
+      auto const d = kumi::fold_left( [](auto a, auto m) KWK_LAMBDA_FORCEINLINE { return push_front(a, m * front(a)); }
+                                    , s
+                                    , kumi::tuple{fixed<1>}
+                                    );
+
+      return [=]<std::size_t... I>(std::index_sequence<I...>, auto t) KWK_LAMBDA_FORCEINLINE
+      {
+        return with_strides((get<I>(Shape).base() = get<I>(t))...);
+      }(std::make_index_sequence<Shape.size()>{}, pop_front(d));
+#   endif
+    }
   }
 }
 
@@ -232,7 +271,7 @@ struct  std::tuple_size<kwk::stride<Desc>>
 template<std::size_t N, auto Desc>
 struct  std::tuple_element<N, kwk::stride<Desc>>
 {
-  using type = typename kwk::stride<Desc>::size_type;
+  using type = typename kwk::stride<Desc>::size_type; // FIXME: is this the culprit - ignoring compile-time information/full axis type and always using size_type (same thing in other places)?
 };
 
 #if !defined(_MSC_VER)
