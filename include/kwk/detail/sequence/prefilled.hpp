@@ -116,36 +116,37 @@ namespace kwk::__
 
     // Fill with a sequence of value/joker
     constexpr void fill(concepts::extent<value_type> auto... vals) noexcept
-    requires(sizeof...(vals) == static_size)
+    requires(sizeof...(vals) <= static_size)
     {
-      auto& v = storage();
-      if constexpr(dynamic_size == static_size)
+      if constexpr( sizeof...(vals) == static_size )
       {
-        v = {static_cast<value_type>(vals)...};
+          auto& v = storage();
+          if constexpr(dynamic_size == static_size)
+          {
+              v = {static_cast<value_type>(vals)...};
+          }
+          else
+          {
+              [=, this]<std::size_t... I>(std::index_sequence<I...>)
+              {
+                  (
+                   this->set
+                   (
+                    std::integral_constant<unsigned, I>{},
+                    vals
+                   ),
+                   ...
+                  );
+              }(std::make_index_sequence<static_size>{});
+          }
       }
-      else
+      else if constexpr( sizeof...(vals) < static_size )
       {
-        [=, this]<std::size_t... I>(std::index_sequence<I...>)
-        {
-          (
-            this->set
-            (
-              std::integral_constant<unsigned, I>{},
-              vals
-            ),
-            ...
-          );
-        }(std::make_index_sequence<static_size>{});
+          [=, this]<int... I>(std::integer_sequence<int, I...>)
+          {
+              this->fill(((void)I,1)..., vals...);
+          }(std::make_integer_sequence<int, static_size - sizeof...(vals)>{});
       }
-    }
-
-    constexpr void fill(concepts::extent<value_type> auto... vals) noexcept
-    requires(sizeof...(vals) < static_size)
-    {
-      [=, this]<int... I>(std::integer_sequence<int, I...>)
-      {
-        this->fill(((void)I,1)..., vals...);
-      }(std::make_integer_sequence<int, static_size - sizeof...(vals)>{});
     }
 
     // Dynamic access
