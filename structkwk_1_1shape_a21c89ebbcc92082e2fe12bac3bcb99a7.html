@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Kiwaku: kwk::shape::fit_constraints</title>
+<title>Kiwaku: kwk::shape::numel</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -95,7 +95,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('structkwk_1_1shape_a7b8d8254cb17a4d56eb9305858867ad1.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('structkwk_1_1shape_a21c89ebbcc92082e2fe12bac3bcb99a7.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -121,24 +121,21 @@ $(document).ready(function(){initNavTree('structkwk_1_1shape_a7b8d8254cb17a4d56e
 </div>
 
 <div class="contents">
-<a id="a7b8d8254cb17a4d56eb9305858867ad1" name="a7b8d8254cb17a4d56eb9305858867ad1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b8d8254cb17a4d56eb9305858867ad1">&#9670;&#160;</a></span>fit_constraints()</h2>
+<a id="a21c89ebbcc92082e2fe12bac3bcb99a7" name="a21c89ebbcc92082e2fe12bac3bcb99a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21c89ebbcc92082e2fe12bac3bcb99a7">&#9670;&#160;</a></span>numel()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;auto Shape&gt; </div>
-<div class="memtemplate">
-template&lt;auto R&gt; </div>
+template&lt;auto... D&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">KWK_PURE constexpr bool <a class="el" href="structkwk_1_1shape.html">kwk::shape</a>&lt; Shape &gt;::fit_constraints </td>
+          <td class="memname">KWK_PURE constexpr std::int32_t <a class="el" href="structkwk_1_1shape.html">kwk::shape</a>&lt; D &gt;::numel </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structkwk_1_1shape.html">shape</a>&lt; R &gt; const &amp;&#160;</td>
-          <td class="paramname"><em>ref</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -148,15 +145,7 @@ template&lt;auto R&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Check if a shape fit current's shape constraints on size and dimension. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ref</td><td>Shape to use as a reference extent </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if both shape has the same order and if each statically set dimension of <code>ref</code> is matched with an equal value in the current shape. </dd></dl>
+<p>Computes the number of elements storable in current <a class="el" href="structkwk_1_1shape.html" title="Fixed order shape with mixed size capability.">kwk::shape</a>, i.e the product of all dimensions' size. </p>
 
 </div>
 </div>

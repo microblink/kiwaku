@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Kiwaku: kwk::of_size</title>
+<title>Kiwaku: kwk::shape::contains</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -95,7 +95,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('namespacekwk_ab830ed07a610c5e16cf12efd0969feac.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('structkwk_1_1shape_afc47189034af5ebcc4531c66a6477a02.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -121,45 +121,42 @@ $(document).ready(function(){initNavTree('namespacekwk_ab830ed07a610c5e16cf12efd
 </div>
 
 <div class="contents">
-<a id="ab830ed07a610c5e16cf12efd0969feac" name="ab830ed07a610c5e16cf12efd0969feac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab830ed07a610c5e16cf12efd0969feac">&#9670;&#160;</a></span>of_size()</h2>
+<a id="afc47189034af5ebcc4531c66a6477a02" name="afc47189034af5ebcc4531c66a6477a02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc47189034af5ebcc4531c66a6477a02">&#9670;&#160;</a></span>contains()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::integral SizeType, int... , concepts::extent&lt; SizeType &gt;... Ds&gt; </div>
+template&lt;auto... D&gt; </div>
+<div class="memtemplate">
+template&lt;std::integral... Coords&gt; <br />
+requires (<a class="el" href="structkwk_1_1shape.html#aef516befd154a7361b535d04bd2759fc">static_order</a> == sizeof...(Coords))</div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">KWK_CONST constexpr auto kwk::of_size </td>
+          <td class="memname">KWK_PURE constexpr bool <a class="el" href="structkwk_1_1shape.html">kwk::shape</a>&lt; D &gt;::contains </td>
           <td>(</td>
-          <td class="paramtype">Ds...&#160;</td>
-          <td class="paramname"><em>ds</em></td><td>)</td>
-          <td></td>
+          <td class="paramtype">Coords...&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Generates a <a class="el" href="structkwk_1_1shape.html" title="Fixed order shape with mixed size capability.">kwk::shape</a> from a list of sizes. </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">SizeType</td><td>Integral type used to store sizes. If unspecified, the most fitting integral type is used. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Check if all coordinates of a given position fits inside a shape volume. Does not participate in overload resolution if the order of the shape and the dimension of the coordinate do not match.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ds</td><td>Variadic pack of sizes </td></tr>
+    <tr><td class="paramname">p</td><td>List of coordinates to check </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if all extent of other fits exactly inside current shape, <code>false</code> otherwise. </dd></dl>
 
 </div>
 </div>
@@ -169,7 +166,7 @@ template&lt;std::integral SizeType, int... , concepts::extent&lt; SizeType &gt;.
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacekwk.html">kwk</a></li>
+    <li class="navelem"><a class="el" href="namespacekwk.html">kwk</a></li><li class="navelem"><a class="el" href="structkwk_1_1shape.html">shape</a></li>
   </ul>
 </div>
 </div> <!-- DOXYSTRAP RELATED -->
