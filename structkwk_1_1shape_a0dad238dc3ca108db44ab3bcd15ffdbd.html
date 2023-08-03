@@ -122,7 +122,7 @@ $(document).ready(function(){initNavTree('structkwk_1_1shape_a0dad238dc3ca108db4
 
 <div class="contents">
 <a id="a0dad238dc3ca108db44ab3bcd15ffdbd" name="a0dad238dc3ca108db44ab3bcd15ffdbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dad238dc3ca108db44ab3bcd15ffdbd">&#9670;&#160;</a></span>shape() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dad238dc3ca108db44ab3bcd15ffdbd">&#9670;&#160;</a></span>shape()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,7 +150,7 @@ requires ( constraint_t::is_contructible_from&lt;parent{},typename <a class="el"
 </table>
 </div><div class="memdoc">
 <p>Copy the content of another <a class="el" href="structkwk_1_1shape.html" title="Fixed order shape with mixed size capability.">kwk::shape</a> if their extents and axis are compatible.</p>
-<dl class="section note"><dt>Note</dt><dd>This constructor is explicit if the order of current shape is not equal to the order of <code>other</code>. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This constructor is explicit if the order of current shape is less than the order of <code>other</code> (thus requiring 'compression'). </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td>Shape to copy </td></tr>
